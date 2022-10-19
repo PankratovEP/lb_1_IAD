@@ -7,14 +7,16 @@ import pingouin as pg
 from scipy.stats import kstest
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
+from statsmodels.stats.stattools import durbin_watson
+
 
 iris = load_iris()
 
 
 # датафрейм имеет вид таблицы со столбами: 'sepal length (cm)' , 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'
 iris_pd = pd.DataFrame(data=np.c_[iris['data']], columns=iris['feature_names'])
-undepend = np.array(iris_pd['petal length (cm)']).reshape((-1, 1))
-depended = (iris_pd['sepal length (cm)'], iris_pd['sepal width (cm)'], iris_pd['petal width (cm)'])
+undepend = np.array(iris_pd['petal length (cm)']).reshape((-1, 1)) # зависимая выходит
+depended = (iris_pd['sepal length (cm)'], iris_pd['sepal width (cm)'], iris_pd['petal width (cm)']) # независимая входит предикаторы
 
 
 def box_plots():
@@ -185,6 +187,7 @@ def ost_regr_petlen_sepwid():
     plt.show()
 
 
+# Господь всемогущий покинул эту функцию на костылях
 def mozh_regr():
     X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
     y = iris_pd['petal length (cm)']
@@ -202,27 +205,34 @@ def mozh_regr():
     df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
     reg_m = LinearRegression().fit(iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)']), iris_pd['petal length (cm)'])
     prediction = reg_m.predict(iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)']))
-    fig = plt.figure(figsize=(9, 9))
-    ax = fig.add_subplot(projection='3d')
-    ax.set_xlabel('predicted_pet_len')
-    ax.set_ylabel('sepal length (cm)')
-    ax.set_zlabel('petal width (cm)')
-    sequence_containing_x_vals = prediction
-    sequence_containing_y_vals = iris_pd['sepal length (cm)']
-    sequence_containing_z_vals = iris_pd['petal width (cm)']
-    ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
-    plt.show()
     y = []
     for i in range(len(prediction)):
         y.append(model.intercept_ + 0.5598*iris_pd['sepal length (cm)'][i] + 1.7772*iris_pd['petal width (cm)'][i])
     y.sort()
     real = sorted(iris_pd['petal length (cm)'])
     ls = [(real[i] - y[i]) for i in range(len(prediction))]
-    plt.scatter(iris_pd['petal length (cm)'], ls)
-    plt.plot(undepend, [0] * 150, color='Red')
-    plt.title('График остатков')
-    plt.show()
-    pg.qqplot(ls)
-    plt.show()
+    def one_million_graphiks():
+        fig = plt.figure(figsize=(9, 9))
+        ax = fig.add_subplot(projection='3d')
+        ax.set_xlabel('predicted_pet_len')
+        ax.set_ylabel('sepal length (cm)')
+        ax.set_zlabel('petal width (cm)')
+        sequence_containing_x_vals = prediction
+        sequence_containing_y_vals = iris_pd['sepal length (cm)']
+        sequence_containing_z_vals = iris_pd['petal width (cm)']
+        ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
+        plt.show()
+        plt.scatter(iris_pd['petal length (cm)'], ls)
+        plt.plot(undepend, [0] * 150, color='Red')
+        plt.title('График остатков')
+        plt.show()
+        pg.qqplot(ls)
+        plt.show()
     print(f'MAE = {(1/150)*sum([abs(iris_pd["petal length (cm)"][i] - prediction[i]) for i in range(len(prediction))])}')
-par_regr_petlen_seplen()
+    print(kstest(ls, 'norm'), sep='\n')
+    def histr():
+        plt.hist(ls, bins=17)
+        plt.show()
+    print(f'Durbin_Watson : {durbin_watson(ls)}')
+
+
