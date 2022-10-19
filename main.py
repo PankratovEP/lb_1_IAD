@@ -143,3 +143,18 @@ def ost_regr_petlen_seplen():
     fig = sm.graphics.plot_regress_exog(model, 'sepal length (cm)', fig=fig)
     plt.show()
 
+
+def ost_regr_petlen_petwid():
+    model = sm.OLS(undepend, depended[0]).fit()
+    fig = plt.figure(figsize=(12,8))
+    fig = sm.graphics.plot_regress_exog(model, 'sepal length (cm)', fig=fig)
+    plt.show()
+
+
+def ost_regr_petlen_sepwid():
+    model = sm.OLS(undepend, depended[0]).fit()
+    fig = plt.figure(figsize=(12,8))
+    fig = sm.graphics.plot_regress_exog(model, 'sepal length (cm)', fig=fig)
+    plt.show()
+
+
