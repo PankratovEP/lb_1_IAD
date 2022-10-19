@@ -6,13 +6,13 @@ import seaborn as sb
 import pingouin as pg
 from scipy.stats import kstest
 from sklearn.linear_model import LinearRegression
-
+from sklearn.model_selection import train_test_split
 
 iris = load_iris()
 
 
 # датафрейм имеет вид таблицы со столбами: 'sepal length (cm)' , 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'
-iris_pd = pd.DataFrame(data=np.c_[iris['data'], iris['target']], columns=iris['feature_names'] + ['target'])
+iris_pd = pd.DataFrame(data=np.c_[iris['data']], columns=iris['feature_names'])
 undepend = np.array(iris_pd['petal length (cm)']).reshape((-1, 1))
 depended = (iris_pd['sepal length (cm)'], iris_pd['sepal width (cm)'], iris_pd['petal width (cm)'])
 
@@ -179,5 +179,14 @@ def ost_regr_petlen_sepwid():
     plt.show()
 
 
-
-
+def mozh_regr():
+    X = iris_pd.drop('petal length (cm)', axis=1)
+    y = iris_pd['petal length (cm)']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    coef_df = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
+    reg_m = LinearRegression().fit(iris_pd.drop(columns=['petal length (cm)']), iris_pd['petal length (cm)'])
+    print(coef_df)
+    print(reg_m.coef_)
+mozh_regr()
