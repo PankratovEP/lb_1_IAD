@@ -59,6 +59,7 @@ def histograms():
     plt.title('Ширина лепестка')
     plt.show()
 
+
 def qqplots():
     pg.qqplot(iris_pd['sepal length (cm)'])
     plt.title('sepal length (cm)')
@@ -68,7 +69,27 @@ def qqplots():
     plt.title('petal length (cm)')
     pg.qqplot(iris_pd['petal width (cm)'])
     plt.title('petal width (cm)')
-
     plt.show()
 
-qqplots()
+
+def scat_plot():
+    plt.subplot(2, 2, 1)
+    plt.scatter(iris_pd['petal length (cm)'], iris_pd['sepal length (cm)'])
+    plt.title('petal length(x) - sepal length')
+    plt.subplot(2, 2, 2)
+    plt.scatter(iris_pd['petal length (cm)'], iris_pd['sepal width (cm)'])
+    plt.title('petal length(x) - sepal width')
+    plt.subplot(2, 2, 3)
+    plt.scatter(iris_pd['petal length (cm)'], iris_pd['petal width (cm)'])
+    plt.title('petal length(x) - petal width')
+    plt.show()
+
+def threed_scatter():
+    fig = plt.figure(figsize=(9, 9))
+    ax = fig.add_subplot(projection='3d')
+    sequence_containing_x_vals = iris_pd['petal length (cm)']
+    sequence_containing_y_vals = iris_pd['sepal length (cm)']
+    sequence_containing_z_vals = iris_pd['petal width (cm)']
+    ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
+    plt.show()
+threed_scatter()

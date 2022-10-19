@@ -33,7 +33,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.икз_тема6">
+  <component name="RunManager" selected="Python.main">
     <configuration name="икз_тема6" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="lb_1_IAD" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -78,8 +78,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.икз_тема6" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.икз_тема6" />
       </list>
     </recent_temporary>
   </component>
