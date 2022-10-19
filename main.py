@@ -6,7 +6,7 @@ import seaborn as sb
 import pingouin as pg
 from scipy.stats import kstest
 from sklearn.linear_model import LinearRegression
-import statsmodels.api as sm
+
 
 iris = load_iris()
 
@@ -138,23 +138,46 @@ def par_regr_petlen_petwid():
 
 
 def ost_regr_petlen_seplen():
-    model = sm.OLS(undepend, depended[0]).fit()
-    fig = plt.figure(figsize=(12,8))
-    fig = sm.graphics.plot_regress_exog(model, 'sepal length (cm)', fig=fig)
+    model = LinearRegression().fit(undepend, depended[0])
+    predskazanie = model.predict(undepend)
+    ls = [float(depended[0][i] - predskazanie[i]) for i in range(len(predskazanie))]
+    fig = plt.figure(figsize=(12,10))
+    fig = fig.add_subplot()
+    fig.grid()
+    plt.scatter(undepend,ls)
+    plt.plot(undepend, [0]*150, color='Red')
+    plt.title('Остатки от длины чашелистика')
+    pg.qqplot(ls)
     plt.show()
 
 
 def ost_regr_petlen_petwid():
-    model = sm.OLS(undepend, depended[0]).fit()
-    fig = plt.figure(figsize=(12,8))
-    fig = sm.graphics.plot_regress_exog(model, 'sepal length (cm)', fig=fig)
+    model = LinearRegression().fit(undepend, depended[2])
+    predskazanie = model.predict(undepend)
+    ls = [float(depended[2][i] - predskazanie[i]) for i in range(len(predskazanie))]
+    fig = plt.figure(figsize=(12, 10))
+    fig = fig.add_subplot()
+    fig.grid()
+    plt.scatter(undepend, ls)
+    plt.plot(undepend, [0] * 150, color='Red')
+    plt.title('Остатки от ширины лепестка')
+    pg.qqplot(ls)
     plt.show()
 
 
 def ost_regr_petlen_sepwid():
-    model = sm.OLS(undepend, depended[0]).fit()
-    fig = plt.figure(figsize=(12,8))
-    fig = sm.graphics.plot_regress_exog(model, 'sepal length (cm)', fig=fig)
+    model = LinearRegression().fit(undepend, depended[1])
+    predskazanie = model.predict(undepend)
+    ls = [float(depended[1][i] - predskazanie[i]) for i in range(len(predskazanie))]
+    fig = plt.figure(figsize=(8, 6))
+    fig = fig.add_subplot()
+    fig.grid()
+    plt.scatter(undepend, ls)
+    plt.plot(undepend, [0] * 150, color='Red')
+    plt.title('Остатки от ширины чашелистика')
+    pg.qqplot(ls)
     plt.show()
+
+
 
 
