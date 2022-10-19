@@ -5,13 +5,16 @@ from sklearn.datasets import load_iris
 import seaborn as sb
 import pingouin as pg
 from scipy.stats import kstest
-
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
 
 iris = load_iris()
 
 
 # датафрейм имеет вид таблицы со столбами: 'sepal length (cm)' , 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'
 iris_pd = pd.DataFrame(data=np.c_[iris['data'], iris['target']], columns=iris['feature_names'] + ['target'])
+undepend = np.array(iris_pd['petal length (cm)']).reshape((-1, 1))
+depended = (iris_pd['sepal length (cm)'], iris_pd['sepal width (cm)'], iris_pd['petal width (cm)'])
 
 
 def box_plots():
@@ -84,6 +87,7 @@ def scat_plot():
     plt.title('petal length(x) - petal width')
     plt.show()
 
+
 def threed_scatter():
     fig = plt.figure(figsize=(9, 9))
     ax = fig.add_subplot(projection='3d')
@@ -92,4 +96,50 @@ def threed_scatter():
     sequence_containing_z_vals = iris_pd['petal width (cm)']
     ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
     plt.show()
-threed_scatter()
+
+
+def par_regr_petlen_seplen():
+    model = LinearRegression().fit(undepend, depended[0])
+    r_sq = model.score(undepend, depended[0])
+    print('Анализпарной регрессии между длиной лепестка и длиной чашелистика')
+    print('coef determination', r_sq)
+    print('b0 coef:',model.intercept_)
+    print('k coef:', model.coef_, end='\n******************\n')
+    plt.scatter(iris_pd['petal length (cm)'], iris_pd['sepal length (cm)'])
+    plt.plot(iris_pd['petal length (cm)'], model.predict(undepend), color='Red')
+    plt.title('petal length(x) - sepal length')
+    plt.show()
+
+
+def par_regr_petlen_sepwid():
+    model = LinearRegression().fit(undepend, depended[1])
+    r_sq = model.score(undepend, depended[1])
+    print('Анализпарной регрессии между длиной лепестка и шириной чашелистика')
+    print('coef determination', r_sq)
+    print('b0 coef:',model.intercept_)
+    print('k coef:', model.coef_, end='\n******************\n')
+    plt.scatter(iris_pd['petal length (cm)'], iris_pd['sepal width (cm)'])
+    plt.plot(iris_pd['petal length (cm)'], model.predict(undepend), color='Red')
+    plt.title('petal length(x) - sepal width')
+    plt.show()
+
+
+def par_regr_petlen_petwid():
+    model = LinearRegression().fit(undepend, depended[2])
+    r_sq = model.score(undepend, depended[2])
+    print('Анализпарной регрессии между длиной лепестка и шириной лепестка')
+    print('coef determination', r_sq)
+    print('b0 coef:',model.intercept_)
+    print('k coef:', model.coef_, end='\n******************\n')
+    plt.scatter(iris_pd['petal length (cm)'], iris_pd['petal width (cm)'])
+    plt.plot(iris_pd['petal length (cm)'], model.predict(undepend), color='Red')
+    plt.title('petal length(x) - petal width')
+    plt.show()
+
+
+def ost_regr_petlen_seplen():
+    model = sm.OLS(undepend, depended[0]).fit()
+    fig = plt.figure(figsize=(12,8))
+    fig = sm.graphics.plot_regress_exog(model, 'sepal length (cm)', fig=fig)
+    plt.show()
+
