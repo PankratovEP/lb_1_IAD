@@ -109,6 +109,8 @@ def par_regr_petlen_seplen():
     plt.plot(iris_pd['petal length (cm)'], model.predict(undepend), color='Red')
     plt.title('petal length(x) - sepal length')
     plt.show()
+    prediction = model.predict(undepend)
+    print(f'MAE = {(1 / 150) * sum([abs(iris_pd["petal length (cm)"][i] - prediction[i]) for i in range(len(prediction))])}')
 
 
 def par_regr_petlen_sepwid():
@@ -223,4 +225,4 @@ def mozh_regr():
     pg.qqplot(ls)
     plt.show()
     print(f'MAE = {(1/150)*sum([abs(iris_pd["petal length (cm)"][i] - prediction[i]) for i in range(len(prediction))])}')
-par_regr_petlen_sepwid()
+par_regr_petlen_seplen()
