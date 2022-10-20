@@ -20,12 +20,8 @@ iris = load_iris()
 iris_pd = pd.DataFrame(data=np.c_[iris['data']], columns=iris['feature_names'])
 undepend = np.array(iris_pd['petal length (cm)']).reshape((-1, 1)) # зависимая выходит
 depended = (iris_pd['sepal length (cm)'], iris_pd['sepal width (cm)'], iris_pd['petal width (cm)']) # независимая входит предикаторы
-chemic_bd = pd.read_csv('Chemical_process.csv', delimiter=';')
-with open('Chemical_process.csv', 'r+', encoding='utf-8') as f:
-    lines = f.readlines()
-    for i in lines:
-        i.replace(',', '.')
-        print(i)
+chemic_bd = pd.read_csv('Chemical_process.csv', delimiter=';', dtype='float64')
+
 
 
 def box_plots():
@@ -155,7 +151,7 @@ def mozh_regr():
     print(f'Durbin_Watson : {durbin_watson(ls)}')
 
 
-#парная регрессия рабочая
+#парная регрессия рабочая вход - петал  ленх
 def isprav(vhod, vihod):
     model = LinearRegression()
     X = pd.DataFrame(iris_pd[vhod])
@@ -171,8 +167,8 @@ def isprav(vhod, vihod):
     plt.plot(X, model.predict(X), color='Red', label='Regression line')
     plt.axhline(y=0, color='orange', linestyle='--', linewidth=1)
     plt.scatter(y, df_ostatok, color='green', label='Остатки')
-    plt.xlim(0, 7)
-    plt.ylim(-2, 7.5)
+    plt.xlim(0, 9)
+    plt.ylim(-3, 7.5)
     plt.legend()
     plt.grid()
     plt.xlabel(vhod)
@@ -221,5 +217,5 @@ def model_check():
     plt.title('Остатки от тестовой')
     plt.show()
 
-
-print(chemic_bd)
+heat_map(chemic_bd)
+partial_heat(chemic_bd)
