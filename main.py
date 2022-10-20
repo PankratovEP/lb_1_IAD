@@ -9,8 +9,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from statsmodels.stats.stattools import durbin_watson
 from sklearn.metrics import mean_absolute_error
-import statsmodels.api as sm
-
+from sklearn.metrics import mean_squared_error
 
 iris = load_iris()
 
@@ -193,7 +192,7 @@ def ost_regr_petlen_sepwid():
 def mozh_regr():
     X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
     y = iris_pd['petal length (cm)']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.9, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
     model = LinearRegression()
     model.fit(X_train, y_train)
     coef_df = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
@@ -223,6 +222,18 @@ def mozh_regr():
         sequence_containing_y_vals = iris_pd['sepal length (cm)']
         sequence_containing_z_vals = iris_pd['petal width (cm)']
         ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
+        plt.title('PREDICTION')
+        plt.show()
+        fig = plt.figure(figsize=(9, 9))
+        ax = fig.add_subplot(projection='3d')
+        ax.set_xlabel('petal length (cm)')
+        ax.set_ylabel('sepal length (cm)')
+        ax.set_zlabel('petal width (cm)')
+        sequence_containing_x_vals = iris_pd['petal length (cm)']
+        sequence_containing_y_vals = iris_pd['sepal length (cm)']
+        sequence_containing_z_vals = iris_pd['petal width (cm)']
+        ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
+        plt.title('REAL')
         plt.show()
         plt.scatter(iris_pd['petal length (cm)'], ls)
         plt.plot(undepend, [0] * 150, color='Red')
@@ -255,12 +266,34 @@ def isprav(vhod, vihod):
     plt.axhline(y=0, color='orange', linestyle='--', linewidth=1)
     plt.scatter(y, df_ostatok, color='green', label='Остатки')
     plt.xlim(0, 7)
-    plt.ylim(-2, 7)
+    plt.ylim(-2, 7.5)
     plt.legend()
     plt.grid()
     plt.xlabel(vhod)
     plt.ylabel(vihod)
     plt.show()
 
-isprav('petal width (cm)', 'petal length (cm)' )
+def model_check():
+    X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
+    y = iris_pd['petal length (cm)']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    coef_df = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
+    print('TRAIN')
+    print(coef_df)
+    print(f'intercept: {model.intercept_}')
+    print(f'coef determination: {model.score(X, y)}')
+    print(f'Скорректированный кф детерминации {1 - (1 - model.score(X, y))*(149 / (150 - 2 - 1))}')
+    print(f'coef correlation: {model.score(X, y) ** 0.5}')
+    print('TEST')
+    model_test = LinearRegression()
+    model_test.fit(X_test, y_test)
+    coef_t = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
+    print(coef_t)
+    print(f'intercept: {model_test.intercept_}')
+    print(f'coef determination: {model_test.score(X, y)}')
+    print(f'Скорректированный кф детерминации {1 - (1 - model_test.score(X, y)) * (149 / (150 - 2 - 1))}')
+    print(f'coef correlation: {model_test.score(X, y) ** 0.5}')
 
+model_check()
