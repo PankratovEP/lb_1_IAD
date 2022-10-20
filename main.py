@@ -277,23 +277,45 @@ def model_check():
     X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
     y = iris_pd['petal length (cm)']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+    # Тренировочная  модель
     model = LinearRegression()
     model.fit(X_train, y_train)
     coef_df = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
-    print('TRAIN')
-    print(coef_df)
-    print(f'intercept: {model.intercept_}')
-    print(f'coef determination: {model.score(X, y)}')
-    print(f'Скорректированный кф детерминации {1 - (1 - model.score(X, y))*(149 / (150 - 2 - 1))}')
-    print(f'coef correlation: {model.score(X, y) ** 0.5}')
-    print('TEST')
+
+    # Тестовая модель
     model_test = LinearRegression()
     model_test.fit(X_test, y_test)
     coef_t = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
-    print(coef_t)
-    print(f'intercept: {model_test.intercept_}')
-    print(f'coef determination: {model_test.score(X, y)}')
-    print(f'Скорректированный кф детерминации {1 - (1 - model_test.score(X, y)) * (149 / (150 - 2 - 1))}')
-    print(f'coef correlation: {model_test.score(X, y) ** 0.5}')
+
+    def train():
+        print('        TRAIN')
+        print(coef_df)
+        print(f'intercept: {model.intercept_}')
+        print(f'coef determination: {model.score(X_train, y_train)}')
+        print(f'Скорректированный кф детерминации {1 - (1 - model.score(X_train, y_train))*(119 / (120 - 2 - 1))}')
+        print(f'coef correlation: {model.score(X_train, y_train) ** 0.5}')
+        print(f'MSE : {mean_absolute_error(y_true=y_train, y_pred=model.predict(X_train))}')
+        return plt.scatter(y_train, y_train - model.predict(X_train))
+
+    def tesst():
+        print('\n        TEST')
+        print(coef_t)
+        print(f'intercept: {model_test.intercept_}')
+        print(f'coef determination: {model.score(X_test, y_test)}')
+        print(f'Скорректированный кф детерминации {1 - (1 - model.score(X_test, y_test)) * (29 / (30 - 2 - 1))}')
+        print(f'coef correlation: {model.score(X_test, y_test) ** 0.5}')
+        print(f'MSE : {mean_absolute_error(y_true=y_test, y_pred=model.predict(X_test))}')
+        return plt.scatter(y_test, y_test - model.predict(X_test))
+
+    plt.subplot(1, 2, 1)
+    train()
+    plt.axhline(y=0, color='red', linestyle='--', linewidth=1)
+    plt.title('Остатки от тренировочной')
+    plt.subplot(1, 2, 2)
+    tesst()
+    plt.axhline(y=0, color='red', linestyle='--', linewidth=1)
+    plt.title('Остатки от тестовой')
+    plt.show()
 
 model_check()
