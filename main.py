@@ -244,6 +244,7 @@ def ispr_mnozh():
     print(f'Скорректированный кф детерминации {1 - (1 - determin)*(149 / (150 - 2 - 1))}')
     print(f'MAE: {mean_absolute_error(y_true=y, y_pred=y_preds)}')
     print(f'Дурбин Вотсон: {durbin_watson(ostatki)}')
+    print(kstest(ostatki, 'norm'))
     def graphiki():
         plt.subplot(2, 3, 1)
         plt.scatter(X['sepal length (cm)'], y_preds)
