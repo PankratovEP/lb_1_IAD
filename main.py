@@ -154,8 +154,8 @@ def mozh_regr():
 #парная регрессия рабочая вход - петал  ленх
 def isprav(vhod, vihod):
     model = LinearRegression()
-    X = pd.DataFrame(iris_pd[vhod])
-    y = pd.DataFrame(iris_pd[vihod])
+    X = pd.DataFrame(chemic_bd[vhod])
+    y = pd.DataFrame(chemic_bd[vihod])
     model.fit(X, y)
     det_cf = model.score(X, y)
     print(f'b coef: {model.coef_}')
@@ -163,12 +163,12 @@ def isprav(vhod, vihod):
     print(f'Coef determination: {det_cf}')
     print(f'MAE: {mean_absolute_error(y_true=y, y_pred=model.predict(X))}')
     df_ostatok = y - model.predict(X)
-    plt.scatter(iris_pd[vhod], iris_pd[vihod])
+    plt.scatter(chemic_bd[vhod], chemic_bd[vihod])
     plt.plot(X, model.predict(X), color='Red', label='Regression line')
     plt.axhline(y=0, color='orange', linestyle='--', linewidth=1)
     plt.scatter(y, df_ostatok, color='green', label='Остатки')
-    plt.xlim(0, 9)
-    plt.ylim(-3, 7.5)
+    plt.xlim(7, 13)
+    plt.ylim(56, 64)
     plt.legend()
     plt.grid()
     plt.xlabel(vhod)
@@ -217,5 +217,4 @@ def model_check():
     plt.title('Остатки от тестовой')
     plt.show()
 
-heat_map(chemic_bd)
-partial_heat(chemic_bd)
+isprav('HCL', 'YIELD')
