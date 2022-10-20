@@ -9,6 +9,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from statsmodels.stats.stattools import durbin_watson
 from sklearn.metrics import mean_absolute_error
+import statsmodels.api as sm
+
 
 iris = load_iris()
 
@@ -247,8 +249,15 @@ def isprav(vhod, vihod):
     print(f'intercept: {model.intercept_}')
     print(f'Coef determination: {det_cf}')
     print(f'MAE: {mean_absolute_error(y_true=y, y_pred=model.predict(X))}')
+    df_ostatok = y - model.predict(X)
     plt.scatter(iris_pd[vhod], iris_pd[vihod])
-    plt.plot(X, model.predict(X), color='Red')
+    plt.plot(X, model.predict(X), color='Red', label='Regression line')
+    plt.axhline(y=0, color='orange', linestyle='--', linewidth=1)
+    plt.scatter(y, df_ostatok, color='green', label='Остатки')
+    plt.xlim(0, 7)
+    plt.ylim(-2, 7)
+    plt.legend()
+    plt.grid()
     plt.xlabel(vhod)
     plt.ylabel(vihod)
     plt.show()
