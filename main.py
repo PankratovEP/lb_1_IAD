@@ -236,13 +236,14 @@ def ispr_mnozh():
     determin = model.score(X, y)
     coef_df = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
     y_preds = model.predict(X)
+    ostatki = y - y_preds
     print(coef_df)
     print(f'intercept: {model.intercept_}')
     print(f'determin coeff: {determin}')
     print(f'mulipile corr coef {determin ** 0.5}')
     print(f'Скорректированный кф детерминации {1 - (1 - determin)*(149 / (150 - 2 - 1))}')
     print(f'MAE: {mean_absolute_error(y_true=y, y_pred=y_preds)}')
-    ostatki = y - y_preds
+    print(f'Дурбин Вотсон: {durbin_watson(ostatki)}')
     def graphiki():
         plt.subplot(2, 3, 1)
         plt.scatter(X['sepal length (cm)'], y_preds)
@@ -263,7 +264,6 @@ def ispr_mnozh():
         plt.subplot(2, 3, 6)
         pg.qqplot(ostatki)
         plt.show()
-    graphiki()
 
 ispr_mnozh()
 
