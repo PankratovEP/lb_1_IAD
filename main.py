@@ -154,8 +154,8 @@ def mozh_regr():
 #парная регрессия рабочая вход - петал  ленх
 def isprav(vhod, vihod):
     model = LinearRegression()
-    X = pd.DataFrame(chemic_bd[vhod])
-    y = pd.DataFrame(chemic_bd[vihod])
+    X = pd.DataFrame(iris_pd[vhod])
+    y = pd.DataFrame(iris_pd[vihod])
     model.fit(X, y)
     det_cf = model.score(X, y)
     print(f'b coef: {model.coef_}')
@@ -163,17 +163,27 @@ def isprav(vhod, vihod):
     print(f'Coef determination: {det_cf}')
     print(f'MAE: {mean_absolute_error(y_true=y, y_pred=model.predict(X))}')
     df_ostatok = y - model.predict(X)
-    plt.scatter(chemic_bd[vhod], chemic_bd[vihod])
-    plt.plot(X, model.predict(X), color='Red', label='Regression line')
-    plt.axhline(y=0, color='orange', linestyle='--', linewidth=1)
-    plt.scatter(y, df_ostatok, color='green', label='Остатки')
-    plt.xlim(7, 13)
-    plt.ylim(56, 64)
-    plt.legend()
-    plt.grid()
-    plt.xlabel(vhod)
-    plt.ylabel(vihod)
-    plt.show()
+    def parniy_graph():
+        plt.scatter(iris_pd[vhod], iris_pd[vihod])
+        plt.plot(X, model.predict(X), color='Red', label='Regression line')
+        plt.axhline(y=0, color='orange', linestyle='--', linewidth=1)
+        plt.scatter(y, df_ostatok, color='green', label='Остатки')
+        plt.xlim(-10, 10)
+        plt.ylim(-5, 9)
+        plt.legend()
+        plt.grid()
+        plt.xlabel(vhod)
+        plt.ylabel(vihod)
+        plt.show()
+    def zavis_ot_n ():
+        plt.scatter(list(range(150)), y, color='blue',  label='реальные')
+        plt.scatter(list(range(150)), model.predict(X), color='Red', label='предсказанные')
+        plt.xlabel('Номер в выборке')
+        plt.ylabel(vihod)
+        plt.grid()
+        plt.legend()
+        plt.show()
+
 
 
 def model_check():
@@ -217,4 +227,14 @@ def model_check():
     plt.title('Остатки от тестовой')
     plt.show()
 
-isprav('HCL', 'YIELD')
+
+def ispr_mnozh():
+    X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
+    y = iris_pd['petal length (cm)']
+    reg_m = LinearRegression().fit(X, y)
+    
+
+
+
+
+isprav('petal length (cm)', 'sepal length (cm)')
