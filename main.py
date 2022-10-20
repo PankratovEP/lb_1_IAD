@@ -10,6 +10,8 @@ from sklearn.model_selection import train_test_split
 from statsmodels.stats.stattools import durbin_watson
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
+import csv
+
 
 iris = load_iris()
 
@@ -18,6 +20,12 @@ iris = load_iris()
 iris_pd = pd.DataFrame(data=np.c_[iris['data']], columns=iris['feature_names'])
 undepend = np.array(iris_pd['petal length (cm)']).reshape((-1, 1)) # зависимая выходит
 depended = (iris_pd['sepal length (cm)'], iris_pd['sepal width (cm)'], iris_pd['petal width (cm)']) # независимая входит предикаторы
+chemic_bd = pd.read_csv('Chemical_process.csv', delimiter=';')
+with open('Chemical_process.csv', 'r+', encoding='utf-8') as f:
+    lines = f.readlines()
+    for i in lines:
+        i.replace(',', '.')
+        print(i)
 
 
 def box_plots():
@@ -28,18 +36,13 @@ def box_plots():
 
 
 # .corr()-метод для парных коэфов
-def heat_map():
-    sb.heatmap(data=iris_pd.corr(), annot=True, cmap='coolwarm', linewidths=3, linecolor='black')
+def heat_map(dat=iris_pd):
+    sb.heatmap(dat.corr(), annot=True, cmap='coolwarm', linewidths=3, linecolor='black')
     plt.show()
 
 
-def heat_map_p():
-    sb.heatmap(data=iris_pd.pcorr(), annot=True, cmap='coolwarm', linewidths=3, linecolor='black')
-    plt.show()
-
-
-def partial_heat():
-    dat = pg.pcorr(iris_pd)
+def partial_heat(da=iris_pd):
+    dat = pg.pcorr(da)
     sb.heatmap(data=dat, annot=True, cmap='coolwarm', linewidths=3, linecolor='black')
     plt.show()
 
@@ -88,103 +91,6 @@ def scat_plot():
     plt.subplot(2, 2, 3)
     plt.scatter(iris_pd['petal length (cm)'], iris_pd['petal width (cm)'])
     plt.title('petal length(x) - petal width')
-    plt.show()
-
-
-def threed_scatter():
-    fig = plt.figure(figsize=(9, 9))
-    ax = fig.add_subplot(projection='3d')
-    sequence_containing_x_vals = iris_pd['petal length (cm)']
-    sequence_containing_y_vals = iris_pd['sepal length (cm)']
-    sequence_containing_z_vals = iris_pd['petal width (cm)']
-    ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
-    plt.show()
-
-
-def par_regr_petlen_seplen():
-    model = LinearRegression().fit(undepend, depended[0])
-    r_sq = model.score(undepend, depended[0])
-    print('Анализпарной регрессии между длиной лепестка и длиной чашелистика')
-    print('coef determination', r_sq)
-    print('b0 coef:',model.intercept_)
-    print('k coef:', model.coef_, end='\n******************\n')
-    plt.scatter(iris_pd['petal length (cm)'], iris_pd['sepal length (cm)'])
-    plt.plot(iris_pd['petal length (cm)'], model.predict(undepend), color='Red')
-    plt.title('petal length(x) - sepal length')
-    plt.show()
-    prediction = model.predict(undepend)
-    print(f'MAE = {(1 / 150) * sum([abs(iris_pd["petal length (cm)"][i] - prediction[i]) for i in range(len(prediction))])}')
-
-
-def par_regr_petlen_sepwid():
-    model = LinearRegression().fit(undepend, depended[1])
-    r_sq = model.score(undepend, depended[1])
-    print('Анализпарной регрессии между длиной лепестка и шириной чашелистика')
-    print('coef determination', r_sq)
-    print('b0 coef:',model.intercept_)
-    print('k coef:', model.coef_, end='\n******************\n')
-    plt.scatter(iris_pd['petal length (cm)'], iris_pd['sepal width (cm)'])
-    plt.plot(iris_pd['petal length (cm)'], model.predict(undepend), color='Red')
-    plt.title('petal length(x) - sepal width')
-    plt.show()
-    prediction = model.predict(undepend)
-    print(f'MAE = {(1 / 150) * sum([abs(iris_pd["petal length (cm)"][i] - prediction[i]) for i in range(len(prediction))])}')
-
-
-def par_regr_petlen_petwid():
-    model = LinearRegression().fit(undepend, depended[2])
-    r_sq = model.score(undepend, depended[2])
-    print('Анализпарной регрессии между длиной лепестка и шириной лепестка')
-    print('coef determination', r_sq)
-    print('b0 coef:',model.intercept_)
-    print('k coef:', model.coef_, end='\n******************\n')
-    plt.scatter(iris_pd['petal length (cm)'], iris_pd['petal width (cm)'])
-    plt.plot(iris_pd['petal length (cm)'], model.predict(undepend), color='Red')
-    plt.title('petal length(x) - petal width')
-    plt.show()
-    prediction = model.predict(undepend)
-    print(f'MAE = {(1/150)*sum([abs(iris_pd["petal length (cm)"][i] - prediction[i]) for i in range(len(prediction))])}')
-
-
-def ost_regr_petlen_seplen():
-    model = LinearRegression().fit(undepend, depended[0])
-    predskazanie = model.predict(undepend)
-    ls = [float(depended[0][i] - predskazanie[i]) for i in range(len(predskazanie))]
-    fig = plt.figure(figsize=(12,10))
-    fig = fig.add_subplot()
-    fig.grid()
-    plt.scatter(undepend,ls)
-    plt.plot(undepend, [0]*150, color='Red')
-    plt.title('Остатки от длины чашелистика')
-    pg.qqplot(ls)
-    plt.show()
-
-
-def ost_regr_petlen_petwid():
-    model = LinearRegression().fit(undepend, depended[2])
-    predskazanie = model.predict(undepend)
-    ls = [float(depended[2][i] - predskazanie[i]) for i in range(len(predskazanie))]
-    fig = plt.figure(figsize=(12, 10))
-    fig = fig.add_subplot()
-    fig.grid()
-    plt.scatter(undepend, ls)
-    plt.plot(undepend, [0] * 150, color='Red')
-    plt.title('Остатки от ширины лепестка')
-    pg.qqplot(ls)
-    plt.show()
-
-
-def ost_regr_petlen_sepwid():
-    model = LinearRegression().fit(undepend, depended[1])
-    predskazanie = model.predict(undepend)
-    ls = [float(depended[1][i] - predskazanie[i]) for i in range(len(predskazanie))]
-    fig = plt.figure(figsize=(8, 6))
-    fig = fig.add_subplot()
-    fig.grid()
-    plt.scatter(undepend, ls)
-    plt.plot(undepend, [0] * 150, color='Red')
-    plt.title('Остатки от ширины чашелистика')
-    pg.qqplot(ls)
     plt.show()
 
 
@@ -273,6 +179,7 @@ def isprav(vhod, vihod):
     plt.ylabel(vihod)
     plt.show()
 
+
 def model_check():
     X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
     y = iris_pd['petal length (cm)']
@@ -283,10 +190,6 @@ def model_check():
     model.fit(X_train, y_train)
     coef_df = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
 
-    # Тестовая модель
-    model_test = LinearRegression()
-    model_test.fit(X_test, y_test)
-    coef_t = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
 
     def train():
         print('        TRAIN')
@@ -295,17 +198,17 @@ def model_check():
         print(f'coef determination: {model.score(X_train, y_train)}')
         print(f'Скорректированный кф детерминации {1 - (1 - model.score(X_train, y_train))*(119 / (120 - 2 - 1))}')
         print(f'coef correlation: {model.score(X_train, y_train) ** 0.5}')
-        print(f'MSE : {mean_absolute_error(y_true=y_train, y_pred=model.predict(X_train))}')
+        print(f'MSE : {mean_squared_error(y_true=y_train, y_pred=model.predict(X_train))}')
         return plt.scatter(y_train, y_train - model.predict(X_train))
 
     def tesst():
         print('\n        TEST')
-        print(coef_t)
-        print(f'intercept: {model_test.intercept_}')
+        print(coef_df)
+        print(f'intercept: {model.intercept_}')
         print(f'coef determination: {model.score(X_test, y_test)}')
         print(f'Скорректированный кф детерминации {1 - (1 - model.score(X_test, y_test)) * (29 / (30 - 2 - 1))}')
         print(f'coef correlation: {model.score(X_test, y_test) ** 0.5}')
-        print(f'MSE : {mean_absolute_error(y_true=y_test, y_pred=model.predict(X_test))}')
+        print(f'MSE : {mean_squared_error(y_true=y_test, y_pred=model.predict(X_test))}')
         return plt.scatter(y_test, y_test - model.predict(X_test))
 
     plt.subplot(1, 2, 1)
@@ -318,4 +221,5 @@ def model_check():
     plt.title('Остатки от тестовой')
     plt.show()
 
-model_check()
+
+print(chemic_bd)
