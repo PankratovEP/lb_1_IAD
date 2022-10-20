@@ -8,7 +8,7 @@ from scipy.stats import kstest
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from statsmodels.stats.stattools import durbin_watson
-
+from sklearn.metrics import mean_absolute_error
 
 iris = load_iris()
 
@@ -235,4 +235,23 @@ def mozh_regr():
         plt.show()
     print(f'Durbin_Watson : {durbin_watson(ls)}')
 
+
+#парная регрессия рабочая
+def isprav(vhod, vihod):
+    model = LinearRegression()
+    X = pd.DataFrame(iris_pd[vhod])
+    y = pd.DataFrame(iris_pd[vihod])
+    model.fit(X, y)
+    det_cf = model.score(X, y)
+    print(f'b coef: {model.coef_}')
+    print(f'intercept: {model.intercept_}')
+    print(f'Coef determination: {det_cf}')
+    print(f'MAE: {mean_absolute_error(y_true=y, y_pred=model.predict(X))}')
+    plt.scatter(iris_pd[vhod], iris_pd[vihod])
+    plt.plot(X, model.predict(X), color='Red')
+    plt.xlabel(vhod)
+    plt.ylabel(vihod)
+    plt.show()
+
+isprav('petal width (cm)', 'petal length (cm)' )
 
