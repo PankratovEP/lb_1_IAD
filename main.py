@@ -231,10 +231,28 @@ def model_check():
 def ispr_mnozh():
     X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
     y = iris_pd['petal length (cm)']
-    reg_m = LinearRegression().fit(X, y)
-    
+    model = LinearRegression()
+    model.fit(X, y)
+    determin = model.score(X, y)
+    coef_df = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
+    print(f'intercept: {model.intercept_}')
+    print(f'determin coeff: {determin}')
+    print(coef_df)
+    print(f'mulipile corr coef {determin ** 0.5}')
+    print(f'Скорректированный кф детерминации {1 - (1 - determin)*(149 / (150 - 2 - 1))}')
+    y_pred = model.predict(X)
+    ostatki = y - y_pred
+    plt.subplot(1, 3, 1)
+    plt.scatter(X['sepal length (cm)'], y_pred)
+    plt.title('Предсказание по sepal width (cm)-х')
+    plt.subplot(1, 3, 2)
+    plt.scatter(X['petal width (cm)'], y_pred)
+    plt.title('Предсказание по petal width (cm)-х')
+    plt.subplot(1, 3, 3)
+    plt.scatter(y, ostatki)
+    plt.axhline(y=0, linewidth=1, color='red')
+    plt.title('График остатков')
+    plt.show()
 
+ispr_mnozh()
 
-
-
-isprav('petal length (cm)', 'sepal length (cm)')
