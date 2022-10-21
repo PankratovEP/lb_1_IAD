@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from statsmodels.stats.stattools import durbin_watson
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
-import csv
+
 
 
 iris = load_iris()
@@ -124,7 +124,6 @@ def isprav(vhod, vihod):
         plt.show()
 
 
-
 def model_check():
     X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
     y = iris_pd['petal length (cm)']
@@ -184,6 +183,8 @@ def ispr_mnozh():
     print(f'MAE: {mean_absolute_error(y_true=y, y_pred=y_preds)}')
     print(f'Дурбин Вотсон: {durbin_watson(ostatki)}')
     print(kstest(ostatki, 'norm'))
+
+
     def graphiki():
         plt.subplot(2, 3, 1)
         plt.scatter(X['sepal length (cm)'], y_preds)
@@ -204,6 +205,3 @@ def ispr_mnozh():
         plt.subplot(2, 3, 6)
         pg.qqplot(ostatki)
         plt.show()
-
-ispr_mnozh()
-
