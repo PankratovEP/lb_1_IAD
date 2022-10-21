@@ -90,67 +90,6 @@ def scat_plot():
     plt.show()
 
 
-# Господь всемогущий покинул эту функцию на костылях
-def mozh_regr():
-    X = iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)'])
-    y = iris_pd['petal length (cm)']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-    coef_df = pd.DataFrame(model.coef_, X.columns, columns=['Coeffs'])
-    print(coef_df)
-    print(f'intercept {model.intercept_}')
-    print(f'coef determination {model.score(X, y)}')
-    det = model.score(X, y)
-    print(f'mulipile corr coef {model.score(X, y) ** 0.5}')
-    print(f'Скорректированный кф детерминации {1 - (1 - det)*(149 / (150 - 2 - 1))}')
-    y_pred = model.predict(X_test)
-    df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
-    reg_m = LinearRegression().fit(iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)']), iris_pd['petal length (cm)'])
-    prediction = reg_m.predict(iris_pd.drop(columns=['petal length (cm)', 'sepal width (cm)']))
-    y = []
-    for i in range(len(prediction)):
-        y.append(model.intercept_ + 0.5598*iris_pd['sepal length (cm)'][i] + 1.7772*iris_pd['petal width (cm)'][i])
-    y.sort()
-    real = sorted(iris_pd['petal length (cm)'])
-    ls = [(real[i] - y[i]) for i in range(len(prediction))]
-    def one_million_graphiks():
-        fig = plt.figure(figsize=(9, 9))
-        ax = fig.add_subplot(projection='3d')
-        ax.set_xlabel('predicted_pet_len')
-        ax.set_ylabel('sepal length (cm)')
-        ax.set_zlabel('petal width (cm)')
-        sequence_containing_x_vals = prediction
-        sequence_containing_y_vals = iris_pd['sepal length (cm)']
-        sequence_containing_z_vals = iris_pd['petal width (cm)']
-        ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
-        plt.title('PREDICTION')
-        plt.show()
-        fig = plt.figure(figsize=(9, 9))
-        ax = fig.add_subplot(projection='3d')
-        ax.set_xlabel('petal length (cm)')
-        ax.set_ylabel('sepal length (cm)')
-        ax.set_zlabel('petal width (cm)')
-        sequence_containing_x_vals = iris_pd['petal length (cm)']
-        sequence_containing_y_vals = iris_pd['sepal length (cm)']
-        sequence_containing_z_vals = iris_pd['petal width (cm)']
-        ax.scatter(sequence_containing_x_vals, sequence_containing_y_vals, sequence_containing_z_vals)
-        plt.title('REAL')
-        plt.show()
-        plt.scatter(iris_pd['petal length (cm)'], ls)
-        plt.plot(undepend, [0] * 150, color='Red')
-        plt.title('График остатков')
-        plt.show()
-        pg.qqplot(ls)
-        plt.show()
-    print(f'MAE = {(1/150)*sum([abs(iris_pd["petal length (cm)"][i] - prediction[i]) for i in range(len(prediction))])}')
-    print(kstest(ls, 'norm'), sep='\n')
-    def histr():
-        plt.hist(ls, bins=17)
-        plt.show()
-    print(f'Durbin_Watson : {durbin_watson(ls)}')
-
-
 #парная регрессия рабочая вход - петал  ленх
 def isprav(vhod, vihod):
     model = LinearRegression()
